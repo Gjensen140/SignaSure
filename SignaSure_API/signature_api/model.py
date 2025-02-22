@@ -65,8 +65,8 @@ transform = transforms.Compose([
 
 app = Flask(__name__)
 
-@app.route('/predict', methods=['POST'])
-def predict():
+@app.route('/classify', methods=['POST'])
+def classify():
 
     CONFIDENCE_THRESHOLD = 0.5  #TODO FIND THE RIGHT VALUE
 
