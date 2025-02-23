@@ -19,13 +19,6 @@ app = Flask(__name__)
 
 def classify(image_array_1, image_array_2):
     
-    img1 = preprocess_image(image_array_1)
-    img2 = preprocess_image(image_array_2)
-    
-    with tf.device('/CPU:0'):
-        prediction1 = model.predict(img1)
-        prediction2 = model.predict(img2)
-    
     similarity = np.dot(prediction1.flatten(), prediction2.flatten()) / (
         np.linalg.norm(prediction1.flatten()) * np.linalg.norm(prediction2.flatten())
     )
@@ -44,5 +37,5 @@ def classify(image_array_1, image_array_2):
             'classification': "Genuine"
         })
     
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+#if __name__ == '__main__':
+#    app.run(host='0.0.0.0', port=5000, debug=True)
