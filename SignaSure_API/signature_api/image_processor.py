@@ -1,7 +1,7 @@
 from PIL import Image
 import numpy as np
 
-def image_cleaning(image_file, target_size=(150, 220)):
+def image_cleaning(image_file, target_size=(512, 512)):
     """Converts an image to grayscale, resizes it, and returns a NumPy array"""
     # Convert the image to grayscale
     img = image_file.convert("L")
