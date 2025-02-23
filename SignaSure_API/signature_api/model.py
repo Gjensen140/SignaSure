@@ -1,3 +1,4 @@
+'''
 from flask import Flask, request, jsonify
 import torch
 import torch.nn.functional as F
@@ -11,7 +12,7 @@ class SiameseModel(torch.nn.Module):
     def __init__(self):
         super(SiameseModel, self).__init__()
         self.model = SigNet()
-        self.probs = torch.nn.Linear(self.model.feature_space_size * 2, 1)
+        self.probs = torch.nn.Linear(4, 1)
     
     def forward_once(self, img):
         return self.model.forward_once(img)
@@ -53,7 +54,7 @@ class SigNet(torch.nn.Module):
 
 # Initialize model and load weights
 model = SiameseModel()
-model.load_state_dict(torch.load("convnet_best_loss.pt", map_location=torch.device('cpu'))['model'])
+model.load_state_dict(torch.load("SignaSure_API/signature_api/convnet_best_loss.pt", map_location=torch.device('cpu'))['model'])
 model.eval()
 
 # Image Preprocessing
@@ -68,15 +69,9 @@ app = Flask(__name__)
 def classify(img_arr1, img_arr2):
 
     CONFIDENCE_THRESHOLD = 0.5  #TODO FIND THE RIGHT VALUE
-
-    if 'image1' not in request.files or 'image2' not in request.files:
-        return jsonify({'error': 'Both image1 and image2 are required'}), 400
  
-    image1 = np.frombuffer(img_arr1, dtype = np.unit8)
-    image2 = np.frombuffer(img_arr2, dtype = np.unit8)
-    
-    img1 = transform(image1).unsqueeze(0)
-    img2 = transform(image2).unsqueeze(0)
+    img1 = torch.tensor(img_arr1, dtype=torch.float32).unsqueeze(0).unsqueeze(0) / 255.0
+    img2 = torch.tensor(img_arr2, dtype=torch.float32).unsqueeze(0).unsqueeze(0) / 255.0
     
     with torch.no_grad():
         embedding1, embedding2, confidence = model(img1, img2)
@@ -96,5 +91,6 @@ def classify(img_arr1, img_arr2):
             'classification': 'Genuine'
         })
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+# if __name__ == '__main__':
+#    app.run(host='0.0.0.0', port=5000, debug=True)
+'''

@@ -1,40 +1,46 @@
 from flask import Blueprint, request, jsonify
 from signature_api.database import validate_pin
-from signature_api.model import classify
+# from signature_api.model import classify
 from signature_api.image_processor import image_cleaning
+from PIL import Image
+from io import BytesIO
 
 main = Blueprint("main", __name__)
 
-@main.route('/clients/<client_id>/process_images', methods=['POST'])
-def process_images(client_id):
-    """Handles image uploads, converts them to NumPy arrays, and returns metadata"""
-    if 'images' not in request.files:
-        return jsonify({"error": "No images provided"}), 400
+@main.route('/process_images', methods=['POST'])
+def process_images():
+    '''
+    Handles image uploads, converts them to NumPy arrays, and returns metadata
+    '''
+    data = request.get_json()
+    if not data or 'image_data' not in data:
+        return jsonify({"error": "No image data provided"}), 400
 
-    # Get PIN from request headers
-    user_pin = request.headers.get("PIN")
-    
-    # Checking the user has a PIN in the system
-    if not user_pin or not validate_pin(user_pin):
-        return jsonify({"error": "Invalid or missing PIN. Access denied."}), 403
+    # Ensuring two images were sent
+    image_data = data['image_data']
+    if not isinstance(images_data, list) or len(images_data) != 2:
+        return jsonify({"error": "Exactly two images are required"}), 400
 
-    # Making sure the files sent were images
-    if 'images' not in request.files:
-        return jsonify({"error": "No images provided"}), 400
-
-    images = request.files.getlist('images')
-    comp_images = []
-
-    for image in images:
-        # Skipping blank files
-        if image.filename == '':
-            continue
-
+    for idx, image_data in enumerate(images_data):
         try:
-            # Converting then storing the images for comparison
-            numpy_array = image_cleaning(image)
-            comp_images.append(numpy_array)
-        except Exception as e:
-            return jsonify({"error": f"Failed to process image {image.filename}: {str(e)}"}), 500
+            # Decode the Base64 image
+            img_bytes = base64.b64decode(image_data)
+            img = Image.open(BytesIO(img_bytes))  
+            # Convert to NumPy array
+            numpy_array = image_cleaning(img)
 
-    return classify(comp_images[0], comp_images[1])
+            # Delete later and just call model function
+            processed_data = {
+                "image_index": idx,
+                "shape": numpy_array.shape,  # Shape of the NumPy array
+                "dtype": str(numpy_array.dtype)  # Data type of the NumPy array
+            }
+            results.append(processed_data)
+        except Exception as e:
+            return jsonify({"error": f"Failed to process image {idx}: {str(e)}"}), 500
+    #  Change to just return the output of the model
+    return jsonify({
+        'similarity_score': 100,
+        'confidence': 100,
+        'classification': 'Genuine'
+    })
