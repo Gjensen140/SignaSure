@@ -3,7 +3,7 @@ import torch
 import numpy as np
 
 # Load the PyTorch model
-model = torch.load("forge_2.pth", map_location=torch.device('cpu'))
+model = torch.load("SignaSure_API\signature_api\\forge_2.h5", map_location=torch.device('cpu'),weights_only=False)
 model.eval()
 
 CONFIDENCE_THRESHOLD = 0.15  
