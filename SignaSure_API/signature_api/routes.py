@@ -24,6 +24,9 @@ def process_images():
     if not isinstance(image_data, list) or len(image_data) != 2:
         return jsonify({"error": "Exactly two images are required"}), 400
 
+    # Store Processsed images
+    numpy_array = []
+    
     for idx, image_data in enumerate(image_data):
         try:
             
@@ -34,7 +37,7 @@ def process_images():
             img = Image.open(BytesIO(img_bytes))  
             
             # Convert to NumPy array
-            numpy_array = image_cleaning(img)
+            numpy_array.append(image_cleaning(img))
             
         except Exception as e:
             return jsonify({"error": f"Failed to process image {idx}: {str(e)}"}), 500
