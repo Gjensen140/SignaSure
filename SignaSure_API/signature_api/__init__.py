@@ -1,4 +1,5 @@
 from flask import Flask
+from .routes import main
 from signature_api.database import create_db
 
 def create_app():
@@ -12,7 +13,6 @@ def create_app():
     app.config["SECRET_KEY"] = "supersecretkey"
 
     # Import and register routes
-    from SignaSure_API.sig_api import main
     app.register_blueprint(main)
 
     return app
