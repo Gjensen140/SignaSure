@@ -65,16 +65,15 @@ transform = transforms.Compose([
 
 app = Flask(__name__)
 
-@app.route('/predict', methods=['POST'])
-def predict():
+def classify(img_arr1, img_arr2):
 
     CONFIDENCE_THRESHOLD = 0.5  #TODO FIND THE RIGHT VALUE
 
     if 'image1' not in request.files or 'image2' not in request.files:
         return jsonify({'error': 'Both image1 and image2 are required'}), 400
-
-    image1 = Image.open(io.BytesIO(request.files['image1'].read()))
-    image2 = Image.open(io.BytesIO(request.files['image2'].read()))
+ 
+    image1 = np.frombuffer(img_arr1, dtype = np.unit8)
+    image2 = np.frombuffer(img_arr2, dtype = np.unit8)
     
     img1 = transform(image1).unsqueeze(0)
     img2 = transform(image2).unsqueeze(0)
