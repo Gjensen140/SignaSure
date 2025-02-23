@@ -2,9 +2,6 @@ from flask import Flask, request, jsonify
 import tensorflow as tf
 import numpy as np
 
-# Load the PyTorch model
-model = torch.load("SignaSure_API\signature_api\\forge_2.h5", map_location=torch.device('cpu'),weights_only=False)
-model.eval()
 
 model = tf.keras.models.load_model("SignaSure_API/signature_api/forge_2.h5")
 
