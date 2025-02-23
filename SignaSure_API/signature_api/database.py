@@ -4,7 +4,9 @@ import random
 
 # Generates a random pin for the user
 def generate_pin():
-    pin = str(random.randint(100000,999999))
+    pin = str(random.randint(100000,999999)) 
+    if (validate_pin(pin)):
+        return generate_pin()
     return pin
 
 # Hash the PIN using SHA-256
