@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 
 
-model = tf.keras.models.load_model("forge_2.h5")
+model = tf.keras.models.load_model("SignaSure_API/signature_api/forge_2.h5")
 
 CONFIDENCE_THRESHOLD = 0.15  # TODO: Adjust as needed
 
