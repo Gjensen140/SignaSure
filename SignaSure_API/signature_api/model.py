@@ -6,8 +6,8 @@ import numpy as np
 model = tf.keras.models.load_model("forge_2.h5")
 
 
-Image_Width, Image_Height = 224, 224
-CONFIDENCE_THRESHOLD = 0.5  # TODO: Adjust as needed
+Image_Width, Image_Height = 512, 512
+CONFIDENCE_THRESHOLD = 0.15  
 
 def preprocess_image(img_arr):
     """Preprocesses a numpy image array for model inference."""
