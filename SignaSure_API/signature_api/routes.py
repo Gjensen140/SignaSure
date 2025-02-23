@@ -1,3 +1,4 @@
+import base64
 from flask import Blueprint, request, jsonify
 from signature_api.database import validate_pin
 # from signature_api.model import classify
@@ -18,14 +19,16 @@ def process_images():
 
     # Ensuring two images were sent
     image_data = data['image_data']
-    if not isinstance(images_data, list) or len(images_data) != 2:
+    if not isinstance(image_data, list) or len(image_data) != 2:
         return jsonify({"error": "Exactly two images are required"}), 400
 
-    for idx, image_data in enumerate(images_data):
+    for idx, image_data in enumerate(image_data):
         try:
+            # Remove the data: part of the string
+            image_data = image_data.split(",")[1]
             # Decode the Base64 image
             img_bytes = base64.b64decode(image_data)
-            img = Image.open(BytesIO(img_bytes))  
+            img = Image.open(BytesIO(img_bytes)) 
             # Convert to NumPy array
             numpy_array = image_cleaning(img)
 
